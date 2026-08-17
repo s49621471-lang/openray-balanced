@@ -3,35 +3,78 @@ name: Update balanced OpenRay subscription
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 * * * *"
+    # OpenRay starts its own hourly check at minute 0. Give it time to finish.
+    - cron: "30 * * * *"
 
 permissions:
   contents: write
 
+concurrency:
+  group: update-balanced-openray
+  cancel-in-progress: true
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Build subscription
+      - name: Install latest Mihomo
         env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          asset_url="$({
+            curl -fsSL \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              https://api.github.com/repos/MetaCubeX/mihomo/releases/latest
+          } | jq -r '
+            .assets[]
+            | select(.name | test("^mihomo-linux-amd64-compatible-.*\\.gz$"))
+            | .browser_download_url
+          ' | head -n 1)"
+
+          if [ -z "${asset_url}" ] || [ "${asset_url}" = "null" ]; then
+            echo "Could not find the Mihomo linux-amd64-compatible asset"
+            exit 1
+          fi
+
+          curl -fL "${asset_url}" -o /tmp/mihomo.gz
+          gzip -dc /tmp/mihomo.gz > /tmp/mihomo
+          chmod +x /tmp/mihomo
+          sudo mv /tmp/mihomo /usr/local/bin/mihomo
+          mihomo -v
+
+      - name: Build and health-check subscription
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MIHOMO_BIN: /usr/local/bin/mihomo
           MAX_PER_COUNTRY: "5"
+          MAX_CANDIDATES_PER_COUNTRY: "40"
+          CHECK_TIMEOUT_MS: "8000"
+          CHECK_WORKERS: "64"
+          CHECK_BATCH_SIZE: "8"
+          DOWNLOAD_WORKERS: "16"
+          MIN_TOTAL_WORKING: "5"
         run: python filter_openray.py
 
       - name: Commit updated subscription
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add balanced.txt balanced_base64.txt stats.json
+          git add balanced.txt balanced_base64.txt stats.json health_report.json
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Update OpenRay balanced subscription"
+            git commit -m "Update health-checked OpenRay subscription"
             git push
           fi
