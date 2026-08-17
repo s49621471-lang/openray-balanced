@@ -1,16 +1,16 @@
-name: Update balanced OpenRay subscription
+name: Update balanced multi-source subscription
 
 on:
   workflow_dispatch:
   schedule:
-    # OpenRay starts its own hourly check at minute 0. Give it time to finish.
-    - cron: "7,22,37,52 * * * *"
+    # Refresh twice per hour; sources themselves update on their own schedules.
+    - cron: "12,42 * * * *"
 
 permissions:
   contents: write
 
 concurrency:
-  group: update-balanced-openray
+  group: update-balanced-multi-vpn
   cancel-in-progress: true
 
 jobs:
@@ -54,27 +54,42 @@ jobs:
           sudo mv /tmp/mihomo /usr/local/bin/mihomo
           mihomo -v
 
-      - name: Build and health-check subscription
+      - name: Build and health-check multi-source subscription
         env:
           GITHUB_TOKEN: ${{ github.token }}
           MIHOMO_BIN: /usr/local/bin/mihomo
+
+          # Final limit: maximum 5 WORKING nodes per country.
           MAX_PER_COUNTRY: "5"
-          MAX_CANDIDATES_PER_COUNTRY: "40"
+
+          # Test a useful pool from every country/source, not thousands.
+          MAX_CANDIDATES_PER_COUNTRY: "60"
+          SOURCE_PER_COUNTRY_LIMIT: "80"
+
           CHECK_TIMEOUT_MS: "8000"
           CHECK_WORKERS: "64"
-          CHECK_BATCH_SIZE: "8"
+          CHECK_BATCH_SIZE: "9"
           DOWNLOAD_WORKERS: "16"
+          DISCOVERY_WORKERS: "16"
+
+          # Never overwrite a healthy old subscription with an almost-empty run.
           MIN_TOTAL_WORKING: "5"
-        run: python filter_openray.py
+        run: python filter_multi.py
 
       - name: Commit updated subscription
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add balanced.txt balanced_base64.txt stats.json health_report.json
+          git add \
+            balanced.txt \
+            balanced_base64.txt \
+            stats.json \
+            health_report.json \
+            sources.json
+
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Update health-checked OpenRay subscription"
+            git commit -m "Update health-checked multi-source subscription"
             git push
           fi
