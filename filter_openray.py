@@ -5,7 +5,6 @@ import os
 import re
 import urllib.request
 import urllib.parse
-from collections import defaultdict
 
 OWNER = "sakha1370"
 REPO = "OpenRay"
@@ -15,6 +14,7 @@ MAX_PER_COUNTRY = int(os.environ.get("MAX_PER_COUNTRY", "5"))
 
 # Protocols that are the safest fit for INCY/Xray-style imports.
 SUPPORTED = ("vless://", "vmess://", "trojan://", "ss://", "hysteria2://")
+
 
 def http_get(url: str) -> bytes:
     req = urllib.request.Request(
@@ -26,6 +26,7 @@ def http_get(url: str) -> bytes:
     )
     with urllib.request.urlopen(req, timeout=45) as r:
         return r.read()
+
 
 def maybe_decode_subscription(raw: bytes) -> str:
     """Return plain URI-per-line subscription text from raw or base64 input."""
@@ -49,6 +50,7 @@ def maybe_decode_subscription(raw: bytes) -> str:
             pass
     return text
 
+
 def endpoint_key(uri: str) -> str:
     """Best-effort key to avoid duplicates of the same server."""
     try:
@@ -62,8 +64,10 @@ def endpoint_key(uri: str) -> str:
     except Exception:
         return uri.split("#", 1)[0]
 
+
 def protocol(uri: str) -> str:
     return uri.split("://", 1)[0].lower()
+
 
 def label_uri(uri: str, cc: str) -> str:
     """Prefix display name with country code while keeping config semantics."""
@@ -87,6 +91,7 @@ def label_uri(uri: str, cc: str) -> str:
         return base + "#" + urllib.parse.quote(new, safe="| -_[]().")
     except Exception:
         return uri
+
 
 def select_balanced(lines, limit):
     """Prefer protocol diversity first, then fill remaining slots."""
@@ -124,13 +129,17 @@ def select_balanced(lines, limit):
             break
     return selected
 
+
 def main():
     entries = json.loads(http_get(COUNTRY_API).decode("utf-8"))
     country_files = sorted(
-        e for e in entries
-        if e.get("type") == "file"
-        and e.get("name", "").lower().endswith(".txt")
-        and e.get("download_url")
+        (
+            e for e in entries
+            if e.get("type") == "file"
+            and e.get("name", "").lower().endswith(".txt")
+            and e.get("download_url")
+        ),
+        key=lambda e: e.get("name", "").casefold(),
     )
 
     merged = []
@@ -190,6 +199,7 @@ def main():
     print(f"Nodes: {len(out)}")
     if failed:
         print("Failed:", failed)
+
 
 if __name__ == "__main__":
     main()
