@@ -101,9 +101,17 @@ def tls_settings(proxy: dict[str, Any], *, implicit: bool = False) -> dict[str, 
         return {"security": "reality", "realitySettings": settings}
 
     if proxy.get("tls") or implicit:
-        settings = {
-            "allowInsecure": bool(proxy.get("skip-cert-verify", False)),
-        }
+        # Xray 26.3.27 removed ``allowInsecure`` completely.  Share links that
+        # explicitly require certificate verification to be disabled cannot
+        # be represented safely without a pinned certificate fingerprint, so
+        # exclude them from the INCY output instead of creating a node that
+        # passes JSON generation but fails at runtime.
+        if boolish(proxy.get("skip-cert-verify", False)):
+            raise UnsupportedNode(
+                "TLS certificate verification is disabled in the source; "
+                "current Xray requires a pinned certificate fingerprint"
+            )
+        settings: dict[str, Any] = {}
         server_name = str(proxy.get("servername") or proxy.get("sni") or "")
         if server_name:
             settings["serverName"] = server_name
@@ -227,7 +235,7 @@ def ss_plugin_stream(proxy: dict[str, Any]) -> dict[str, Any] | None:
         ws["host"] = str(opts["host"])
     stream: dict[str, Any] = {"method": "websocket", "wsSettings": ws}
     if boolish(opts.get("tls")):
-        tls: dict[str, Any] = {"allowInsecure": False}
+        tls: dict[str, Any] = {}
         if opts.get("host"):
             tls["serverName"] = str(opts["host"])
         stream.update({"security": "tls", "tlsSettings": tls})
@@ -242,6 +250,11 @@ def parse_hop_interval(value: Any) -> int:
 
 
 def hysteria_outbound(proxy: dict[str, Any], tag: str) -> dict[str, Any]:
+    if boolish(proxy.get("skip-cert-verify", False)):
+        raise UnsupportedNode(
+            "TLS certificate verification is disabled in the source; "
+            "current Xray requires a pinned certificate fingerprint"
+        )
     stream: dict[str, Any] = {
         "method": "hysteria",
         "security": "tls",
@@ -250,9 +263,7 @@ def hysteria_outbound(proxy: dict[str, Any], tag: str) -> dict[str, Any]:
             "auth": str(proxy["password"]),
         },
     }
-    tls: dict[str, Any] = {
-        "allowInsecure": bool(proxy.get("skip-cert-verify", False)),
-    }
+    tls: dict[str, Any] = {}
     server_name = str(proxy.get("sni") or "")
     if server_name:
         tls["serverName"] = server_name
