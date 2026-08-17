@@ -1,0 +1,37 @@
+name: Update balanced OpenRay subscription
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build subscription
+        env:
+          MAX_PER_COUNTRY: "5"
+        run: python filter_openray.py
+
+      - name: Commit updated subscription
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add balanced.txt balanced_base64.txt stats.json
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Update OpenRay balanced subscription"
+            git push
+          fi
