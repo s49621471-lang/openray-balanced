@@ -291,6 +291,7 @@ def apply_tls(
         proxy["reality-opts"] = {
             "public-key": public_key,
             "short-id": qget(values, "sid", "short-id", "shortid"),
+            "spider-x": qget(values, "spx", "spiderx", "spider-x"),
         }
     return True
 
@@ -328,7 +329,11 @@ def apply_transport(
     if network in {"grpc", "gun"}:
         proxy["network"] = "grpc"
         service = qget(values, "servicename", "service", "path").lstrip("/")
-        proxy["grpc-opts"] = {"grpc-service-name": service}
+        options = {"grpc-service-name": service}
+        authority = qget(values, "authority", "host")
+        if authority:
+            options["grpc-authority"] = authority
+        proxy["grpc-opts"] = options
         return True
 
     if network in {"http", "h2"}:

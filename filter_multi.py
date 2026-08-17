@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Build one small, country-balanced subscription from several public sources.
+"""Build one small, country-balanced subscription from many public sources.
 
-Sources:
-- OpenRay country shards
-- Au1rxx/free-vpn-subscriptions country V2Ray shards
-- igareck/vpn-configs-for-russia Mobile-150
+Country-sharded sources are preferred because their location is explicit.
+Additional global subscriptions are accepted only when a country can be
+derived from the node's flag, ISO code, or country name.  Everything is then
+deduplicated and subjected to the same real end-to-end HTTPS checks.
 
 The heavy lifting (URI parsing + real end-to-end Mihomo HTTPS checks) stays in
 filter_openray.py. This wrapper only discovers/merges sources and feeds them to
@@ -18,6 +18,7 @@ import concurrent.futures
 import json
 import os
 import re
+import unicodedata
 import urllib.parse
 from collections import defaultdict, deque
 from pathlib import Path
@@ -38,9 +39,82 @@ IGARECK_URL = (
     "main/BLACK_VLESS_RUS_mobile.txt"
 )
 
-SOURCE_ORDER = ("OpenRay", "Au1rxx", "igareck")
+FASTNODES_API = (
+    "https://api.github.com/repos/rtwo2/FastNodes/contents/"
+    "sub/countries?ref=main"
+)
+SOLISPIRIT_API = (
+    "https://api.github.com/repos/SoliSpirit/v2ray-configs/contents/"
+    "Countries?ref=main"
+)
+TENIUM_API = (
+    "https://api.github.com/repos/10ium/ScrapeAndCategorize/contents/"
+    "output_configs?ref=main"
+)
+
+GLOBAL_SOURCES = (
+    (
+        "EbraSha",
+        "https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/"
+        "refs/heads/main/V2Ray-Config-By-EbraSha-All-Type.txt",
+    ),
+    (
+        "Epodonios",
+        "https://raw.githubusercontent.com/Epodonios/v2ray-configs/"
+        "main/All_Configs_Sub.txt",
+    ),
+    (
+        "TGParse",
+        "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/"
+        "main/splitted/mixed",
+    ),
+    (
+        "Radikal",
+        "https://raw.githubusercontent.com/0xRadikal/Free-v2ray-Configs/"
+        "main/verified/configs.txt",
+    ),
+    (
+        "Mahdi",
+        "https://raw.githubusercontent.com/Mahdi0024/ProxyCollector/"
+        "master/sub/proxies.txt",
+    ),
+    (
+        "Pawdroid",
+        "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+    ),
+    (
+        "BarryFar",
+        "https://raw.githubusercontent.com/barry-far/V2ray-Config/"
+        "main/All_Configs_Sub.txt",
+    ),
+    (
+        "AbcConfigs",
+        "https://raw.githubusercontent.com/FreeFolksOn/"
+        "abc-configs-free-vpn-proxy-list/main/README.md",
+    ),
+)
+
+SOURCE_ORDER = (
+    "OpenRay",
+    "Au1rxx",
+    "igareck",
+    "FastNodes",
+    "SoliSpirit",
+    "10ium",
+    "EbraSha",
+    "Epodonios",
+    "TGParse",
+    "Radikal",
+    "Mahdi",
+    "Pawdroid",
+    "BarryFar",
+    "AbcConfigs",
+)
 SOURCE_PER_COUNTRY_LIMIT = max(
     10, min(200, int(os.environ.get("SOURCE_PER_COUNTRY_LIMIT", "80")))
+)
+GLOBAL_SOURCE_LINE_LIMIT = max(
+    1000, min(100000, int(os.environ.get("GLOBAL_SOURCE_LINE_LIMIT", "50000")))
 )
 DISCOVERY_WORKERS = max(
     1, min(32, int(os.environ.get("DISCOVERY_WORKERS", "16")))
@@ -49,6 +123,113 @@ DISCOVERY_WORKERS = max(
 ORIGINAL_HTTP_GET = core.http_get
 ORIGINAL_GET_JSON = core.get_json
 ORIGINAL_CHOOSE_DIVERSE = core.choose_diverse
+
+
+ISO_CODES = set(
+    """AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG
+    BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK
+    CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES
+    ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT
+    GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP
+    KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY MA
+    MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA
+    NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS
+    PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO
+    SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ
+    UA UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW XK""".split()
+)
+
+
+COUNTRY_FILENAME_CODES = {
+    "albania": "AL",
+    "argentina": "AR",
+    "armenia": "AM",
+    "australia": "AU",
+    "austria": "AT",
+    "azerbaijan": "AZ",
+    "belarus": "BY",
+    "belgium": "BE",
+    "bosnia_and_herzegovina": "BA",
+    "brazil": "BR",
+    "bulgaria": "BG",
+    "canada": "CA",
+    "chile": "CL",
+    "china": "CN",
+    "colombia": "CO",
+    "costa_rica": "CR",
+    "croatia": "HR",
+    "cyprus": "CY",
+    "czechia": "CZ",
+    "denmark": "DK",
+    "estonia": "EE",
+    "finland": "FI",
+    "france": "FR",
+    "germany": "DE",
+    "greece": "GR",
+    "hong_kong": "HK",
+    "hungary": "HU",
+    "iceland": "IS",
+    "india": "IN",
+    "indonesia": "ID",
+    "iran": "IR",
+    "iraq": "IQ",
+    "ireland": "IE",
+    "israel": "IL",
+    "italy": "IT",
+    "japan": "JP",
+    "kazakhstan": "KZ",
+    "latvia": "LV",
+    "liechtenstein": "LI",
+    "lithuania": "LT",
+    "luxembourg": "LU",
+    "malaysia": "MY",
+    "maldives": "MV",
+    "mauritius": "MU",
+    "mexico": "MX",
+    "moldova": "MD",
+    "montenegro": "ME",
+    "netherlands": "NL",
+    "the_netherlands": "NL",
+    "new_zealand": "NZ",
+    "north_macedonia": "MK",
+    "norway": "NO",
+    "pakistan": "PK",
+    "peru": "PE",
+    "philippines": "PH",
+    "poland": "PL",
+    "portugal": "PT",
+    "romania": "RO",
+    "russia": "RU",
+    "reunion": "RE",
+    "samoa": "WS",
+    "saudi_arabia": "SA",
+    "serbia": "RS",
+    "seychelles": "SC",
+    "singapore": "SG",
+    "slovakia": "SK",
+    "slovenia": "SI",
+    "south_africa": "ZA",
+    "south_korea": "KR",
+    "south_sudan": "SS",
+    "spain": "ES",
+    "sri_lanka": "LK",
+    "sweden": "SE",
+    "switzerland": "CH",
+    "taiwan": "TW",
+    "thailand": "TH",
+    "tonga": "TO",
+    "turkey": "TR",
+    "turkiye": "TR",
+    "uae": "AE",
+    "united_arab_emirates": "AE",
+    "uk": "GB",
+    "united_kingdom": "GB",
+    "usa": "US",
+    "united_states": "US",
+    "ukraine": "UA",
+    "venezuela": "VE",
+    "vietnam": "VN",
+}
 
 
 def log(message: str) -> None:
@@ -127,11 +308,45 @@ def flag_to_country(text: str) -> str | None:
     return None
 
 
-def country_from_igareck(uri: str) -> str | None:
-    country = flag_to_country(display_name(uri))
-    if country and re.fullmatch(r"[A-Z]{2}", country):
+def normalized_country_text(value: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", value)
+    ascii_text = "".join(char for char in decomposed if not unicodedata.combining(char))
+    return re.sub(r"[^a-z0-9]+", "_", ascii_text.casefold()).strip("_")
+
+
+def country_from_filename(filename: str) -> str | None:
+    stem = Path(filename).stem
+    match = re.fullmatch(r"([A-Za-z]{2})(?:_part\d+)?", stem)
+    if match:
+        country = match.group(1).upper()
+        return country if country in ISO_CODES else None
+    return COUNTRY_FILENAME_CODES.get(normalized_country_text(stem))
+
+
+def country_from_display_name(name: str) -> str | None:
+    country = flag_to_country(name)
+    if country in ISO_CODES:
         return country
+
+    # Many collectors use labels such as "DE 1", "[US] node" or "FR | ...".
+    for match in re.finditer(r"(?<![A-Za-z])([A-Z]{2})(?![A-Za-z])", name):
+        country = match.group(1)
+        if country in ISO_CODES:
+            return country
+
+    normalized = f"_{normalized_country_text(name)}_"
+    for alias in sorted(COUNTRY_FILENAME_CODES, key=len, reverse=True):
+        if f"_{alias}_" in normalized:
+            return COUNTRY_FILENAME_CODES[alias]
     return None
+
+
+def country_from_global_uri(uri: str) -> str | None:
+    return country_from_display_name(display_name(uri))
+
+
+def country_from_igareck(uri: str) -> str | None:
+    return country_from_global_uri(uri)
 
 
 def discover_openray() -> list[tuple[str, str, str]]:
@@ -160,6 +375,42 @@ def discover_au1rxx() -> list[tuple[str, str, str]]:
     return tasks
 
 
+def discover_fastnodes() -> list[tuple[str, str, str]]:
+    tasks: list[tuple[str, str, str]] = []
+    entries = get_json(FASTNODES_API)
+    for entry in entries:
+        name = str(entry.get("name", ""))
+        # Use the first/base shard only.  Part files are enormous and the
+        # checker already caps how many candidates each country needs.
+        match = re.fullmatch(r"([A-Za-z]{2})\.txt", name)
+        if entry.get("type") == "file" and match and entry.get("download_url"):
+            country = match.group(1).upper()
+            if country in ISO_CODES:
+                tasks.append(("FastNodes", country, str(entry["download_url"])))
+    return tasks
+
+
+def discover_named_country_directory(
+    source: str, api_url: str
+) -> list[tuple[str, str, str]]:
+    tasks: list[tuple[str, str, str]] = []
+    entries = get_json(api_url)
+    seen: set[tuple[str, str]] = set()
+    for entry in entries:
+        name = str(entry.get("name", ""))
+        if entry.get("type") != "file" or not entry.get("download_url"):
+            continue
+        country = country_from_filename(name)
+        if not country or country == "XX":
+            continue
+        key = (country, str(entry["download_url"]))
+        if key in seen:
+            continue
+        seen.add(key)
+        tasks.append((source, country, str(entry["download_url"])))
+    return tasks
+
+
 def download_task(
     task: tuple[str, str, str]
 ) -> tuple[str, str, list[str], str | None]:
@@ -169,6 +420,34 @@ def download_task(
         return source, country, lines[:SOURCE_PER_COUNTRY_LIMIT], None
     except Exception as exc:
         return source, country, [], f"{type(exc).__name__}: {exc}"
+
+
+def download_global_task(
+    task: tuple[str, str]
+) -> tuple[str, dict[str, list[str]], dict[str, int], str | None]:
+    source, url = task
+    try:
+        lines = decoded_lines(ORIGINAL_HTTP_GET(url))
+        buckets: dict[str, list[str]] = defaultdict(list)
+        scanned = 0
+        classified = 0
+        for uri in lines[:GLOBAL_SOURCE_LINE_LIMIT]:
+            scanned += 1
+            country = country_from_global_uri(uri)
+            if not country or country == "XX":
+                continue
+            classified += 1
+            if len(buckets[country]) < SOURCE_PER_COUNTRY_LIMIT:
+                buckets[country].append(uri)
+        info = {
+            "available": len(lines),
+            "scanned": scanned,
+            "classified": classified,
+            "kept": sum(len(items) for items in buckets.values()),
+        }
+        return source, dict(buckets), info, None
+    except Exception as exc:
+        return source, {}, {}, f"{type(exc).__name__}: {exc}"
 
 
 def round_robin_sources(
@@ -199,21 +478,31 @@ def build_virtual_countries() -> tuple[dict[str, bytes], dict[str, Any]]:
     tasks: list[tuple[str, str, str]] = []
     discovery_errors: dict[str, str] = {}
 
-    try:
-        tasks.extend(discover_openray())
-    except Exception as exc:
-        discovery_errors["OpenRay"] = f"{type(exc).__name__}: {exc}"
-    try:
-        tasks.extend(discover_au1rxx())
-    except Exception as exc:
-        discovery_errors["Au1rxx"] = f"{type(exc).__name__}: {exc}"
+    discoverers = (
+        ("OpenRay", discover_openray),
+        ("Au1rxx", discover_au1rxx),
+        ("FastNodes", discover_fastnodes),
+        (
+            "SoliSpirit",
+            lambda: discover_named_country_directory("SoliSpirit", SOLISPIRIT_API),
+        ),
+        (
+            "10ium",
+            lambda: discover_named_country_directory("10ium", TENIUM_API),
+        ),
+    )
+    for source, discover in discoverers:
+        try:
+            tasks.extend(discover())
+        except Exception as exc:
+            discovery_errors[source] = f"{type(exc).__name__}: {exc}"
 
     per_country_source: dict[str, dict[str, list[str]]] = defaultdict(
         lambda: defaultdict(list)
     )
     source_download_errors: dict[str, list[str]] = defaultdict(list)
 
-    log(f"discovered {len(tasks)} country shards from OpenRay + Au1rxx")
+    log(f"discovered {len(tasks)} explicit country shards from 5 repositories")
     with concurrent.futures.ThreadPoolExecutor(
         max_workers=DISCOVERY_WORKERS
     ) as executor:
@@ -223,8 +512,11 @@ def build_virtual_countries() -> tuple[dict[str, bytes], dict[str, Any]]:
         if error:
             source_download_errors[source].append(f"{country}: {error}")
             continue
+        bucket = per_country_source[country][source]
         for uri in lines:
-            per_country_source[country][source].append(tag_uri(uri, source))
+            if len(bucket) >= SOURCE_PER_COUNTRY_LIMIT:
+                break
+            bucket.append(tag_uri(uri, source))
 
     # igareck is a compact mobile list whose names already contain country flags.
     try:
@@ -238,6 +530,24 @@ def build_virtual_countries() -> tuple[dict[str, bytes], dict[str, Any]]:
                 bucket.append(tag_uri(uri, "igareck"))
     except Exception as exc:
         discovery_errors["igareck"] = f"{type(exc).__name__}: {exc}"
+
+    global_source_stats: dict[str, dict[str, int]] = {}
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=min(DISCOVERY_WORKERS, len(GLOBAL_SOURCES))
+    ) as executor:
+        global_results = list(executor.map(download_global_task, GLOBAL_SOURCES))
+
+    for source, buckets, info, error in global_results:
+        if error:
+            source_download_errors[source].append(error)
+            continue
+        global_source_stats[source] = info
+        for country, lines in buckets.items():
+            bucket = per_country_source[country][source]
+            for uri in lines:
+                if len(bucket) >= SOURCE_PER_COUNTRY_LIMIT:
+                    break
+                bucket.append(tag_uri(uri, source))
 
     virtual: dict[str, bytes] = {}
     available: dict[str, dict[str, int]] = {}
@@ -255,8 +565,10 @@ def build_virtual_countries() -> tuple[dict[str, bytes], dict[str, Any]]:
     discovery = {
         "sources": list(SOURCE_ORDER),
         "source_per_country_limit": SOURCE_PER_COUNTRY_LIMIT,
+        "global_source_line_limit": GLOBAL_SOURCE_LINE_LIMIT,
         "countries_discovered": len(virtual),
         "available_by_country_and_source": available,
+        "global_source_stats": global_source_stats,
         "discovery_errors": discovery_errors,
         "download_errors": dict(source_download_errors),
     }
