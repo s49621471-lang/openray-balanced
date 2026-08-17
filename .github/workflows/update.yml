@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # OpenRay starts its own hourly check at minute 0. Give it time to finish.
-    - cron: "30 * * * *"
+    - cron: "7,22,37,52 * * * *"
 
 permissions:
   contents: write
