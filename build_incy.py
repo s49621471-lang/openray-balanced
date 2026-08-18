@@ -38,6 +38,18 @@ PROBE_INTERVAL = "30s"
 PROBE_SAMPLING = 2
 PROBE_TIMEOUT = "5s"
 
+XRAY_SHADOWSOCKS_METHODS = {
+    "2022-blake3-aes-128-gcm",
+    "2022-blake3-aes-256-gcm",
+    "2022-blake3-chacha20-poly1305",
+    "aes-128-gcm",
+    "aes-256-gcm",
+    "chacha20-poly1305",
+    "chacha20-ietf-poly1305",
+    "xchacha20-poly1305",
+    "xchacha20-ietf-poly1305",
+}
+
 
 class UnsupportedNode(ValueError):
     """The share link works in Mihomo but cannot be represented safely here."""
@@ -374,13 +386,18 @@ def proxy_outbound(proxy: dict[str, Any], tag: str) -> dict[str, Any]:
         stream.update(tls_settings(proxy, implicit=True))
         outbound["streamSettings"] = stream
     elif protocol == "ss":
+        method = str(proxy.get("cipher") or "").strip().casefold()
+        if method not in XRAY_SHADOWSOCKS_METHODS:
+            raise UnsupportedNode(
+                f"unsupported Xray Shadowsocks method: {method or 'missing'}"
+            )
         outbound.update(
             {
                 "protocol": "shadowsocks",
                 "settings": {
                     "address": address,
                     "port": port,
-                    "method": str(proxy["cipher"]),
+                    "method": method,
                     "password": str(proxy["password"]),
                     "level": 0,
                 },
@@ -491,30 +508,98 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("first proxy outbound must have a display tag")
 
 
-def validate_with_xray(configs: list[dict[str, Any]]) -> None:
+def xray_executable() -> str:
     requested = os.environ.get("XRAY_BIN", "").strip()
     if not requested:
-        return
+        return ""
     executable = shutil.which(requested) or (
         requested if Path(requested).is_file() else ""
     )
     if not executable:
         raise RuntimeError(f"Xray binary not found: {requested}")
+    return executable
+
+
+def run_xray_test(
+    executable: str, path: Path, config: dict[str, Any]
+) -> subprocess.CompletedProcess[str]:
+    path.write_text(
+        json.dumps(config, ensure_ascii=False), encoding="utf-8"
+    )
+    return subprocess.run(
+        [executable, "run", "-test", "-config", str(path)],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        timeout=30,
+        check=False,
+    )
+
+
+def xray_error_summary(output: str) -> str:
+    lines = [line.strip() for line in output.splitlines() if line.strip()]
+    for line in reversed(lines):
+        if "Failed to start:" in line:
+            return line.split("Failed to start:", 1)[1].strip()[-800:]
+    return (lines[-1] if lines else "unknown Xray validation error")[-800:]
+
+
+def filter_outbounds_with_xray(
+    converted: list[tuple[dict[str, Any], str]],
+    country: str,
+    skipped: list[dict[str, str]],
+) -> list[tuple[dict[str, Any], str]]:
+    """Drop individual nodes rejected by the installed Xray version.
+
+    Public sources regularly contain legacy or malformed share links.  A
+    single incompatible node must not prevent every other country from being
+    published, so validate each physical outbound before it reaches AUTO.
+    """
+    executable = xray_executable()
+    if not executable:
+        return converted
+
+    accepted: list[tuple[dict[str, Any], str]] = []
+    with tempfile.TemporaryDirectory(
+        prefix=f"incy-xray-node-{country.lower()}-"
+    ) as directory:
+        path = Path(directory) / "config.json"
+        for outbound, protocol in converted:
+            copy = json.loads(json.dumps(outbound, ensure_ascii=False))
+            tag = str(copy.get("tag") or "incy-node-test")
+            probe = manual_config(copy, tag, protocol)
+            validate_config(probe)
+            result = run_xray_test(executable, path, probe)
+            if result.returncode == 0:
+                accepted.append((outbound, protocol))
+                continue
+            skipped.append(
+                {
+                    "country": country,
+                    "protocol": protocol or "unknown",
+                    "reason": f"Xray rejected node: {xray_error_summary(result.stdout)}",
+                }
+            )
+
+    rejected = len(converted) - len(accepted)
+    if rejected:
+        print(
+            f"Xray node precheck {country}: accepted={len(accepted)} "
+            f"rejected={rejected}",
+            flush=True,
+        )
+    return accepted
+
+
+def validate_with_xray(configs: list[dict[str, Any]]) -> None:
+    executable = xray_executable()
+    if not executable:
+        return
 
     with tempfile.TemporaryDirectory(prefix="incy-xray-test-") as directory:
         path = Path(directory) / "config.json"
         for index, config in enumerate(configs, 1):
-            path.write_text(
-                json.dumps(config, ensure_ascii=False), encoding="utf-8"
-            )
-            result = subprocess.run(
-                [executable, "run", "-test", "-config", str(path)],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                timeout=30,
-                check=False,
-            )
+            result = run_xray_test(executable, path, config)
             if result.returncode != 0:
                 name = str(config["outbounds"][0].get("tag") or f"#{index}")
                 tail = "\n".join(result.stdout.splitlines()[-12:])
@@ -577,6 +662,10 @@ def main() -> int:
                         "reason": str(exc),
                     }
                 )
+
+        converted = filter_outbounds_with_xray(
+            converted, country, skipped
+        )
 
         if not converted:
             per_country[country] = {
