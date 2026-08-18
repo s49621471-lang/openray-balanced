@@ -88,7 +88,7 @@ jobs:
           XRAY_BIN: /usr/local/bin/xray
 
           # Final limit: maximum 5 WORKING nodes per country.
-          MAX_PER_COUNTRY: "5"
+          MAX_PER_COUNTRY: "10"
 
           # Test a useful pool from every country/source, not thousands.
           MAX_CANDIDATES_PER_COUNTRY: "60"
