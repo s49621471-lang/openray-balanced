@@ -579,60 +579,20 @@ def build_virtual_countries() -> tuple[dict[str, bytes], dict[str, Any]]:
     return virtual, discovery
 
 
-def choose_diverse_multi(
+def choose_fastest_multi(
     items: list[core.Candidate], limit: int
 ) -> list[core.Candidate]:
-    """Prefer source diversity first, then protocol diversity, then fill."""
-    selected: list[core.Candidate] = []
-    selected_names: set[str] = set()
-    used_sources: set[str] = set()
-    used_protocols: set[str] = set()
-
-    # First: one working node from each source when possible.
-    for item in items:
-        source = source_of(item.uri)
-        if source in used_sources:
-            continue
-        selected.append(item)
-        selected_names.add(item.name)
-        used_sources.add(source)
-        used_protocols.add(item.protocol)
-        if len(selected) >= limit:
-            return selected
-
-    # Second: protocols not represented yet.
-    for item in items:
-        if item.name in selected_names or item.protocol in used_protocols:
-            continue
-        selected.append(item)
-        selected_names.add(item.name)
-        used_protocols.add(item.protocol)
-        if len(selected) >= limit:
-            return selected
-
-    # Third: fill remaining slots round-robin across sources.
-    buckets: dict[str, deque[core.Candidate]] = defaultdict(deque)
-    for item in items:
-        if item.name not in selected_names:
-            buckets[source_of(item.uri)].append(item)
-
-    source_order = list(SOURCE_ORDER) + [
-        source for source in sorted(buckets) if source not in SOURCE_ORDER
-    ]
-    while len(selected) < limit:
-        progressed = False
-        for source in source_order:
-            if not buckets[source]:
-                continue
-            item = buckets[source].popleft()
-            selected.append(item)
-            selected_names.add(item.name)
-            progressed = True
-            if len(selected) >= limit:
-                break
-        if not progressed:
-            break
-    return selected
+    """Select the fastest working nodes across every downloaded source."""
+    return sorted(
+        items,
+        key=lambda item: (
+            item.latency_ms is None,
+            item.latency_ms if item.latency_ms is not None else 10**9,
+            source_of(item.uri),
+            item.endpoint,
+            item.name,
+        ),
+    )[:limit]
 
 
 def selected_source_counts(path: Path) -> dict[str, int]:
@@ -691,7 +651,7 @@ def main() -> int:
 
     core.get_json = virtual_get_json
     core.http_get = virtual_http_get
-    core.choose_diverse = choose_diverse_multi
+    core.choose_diverse = choose_fastest_multi
 
     try:
         result = core.main()

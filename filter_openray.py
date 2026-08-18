@@ -131,6 +131,7 @@ class Candidate:
     protocol: str
     endpoint: str
     proxy: dict[str, Any]
+    latency_ms: int | None = None
 
 
 def log(message: str) -> None:
@@ -902,8 +903,6 @@ def run_checks(
     while True:
         batch: list[Candidate] = []
         for country in sorted(countries):
-            if len(working[country]) >= MAX_PER_COUNTRY:
-                continue
             start = offsets[country]
             end = min(start + CHECK_BATCH_SIZE, len(countries[country]))
             if start < end:
@@ -929,10 +928,11 @@ def run_checks(
                 except Exception:
                     passed, delays = False, []
                 if passed:
+                    item.latency_ms = round(sum(delays) / len(delays))
                     working[item.country].append(item)
                     log(
                         f"PASS {item.country} {item.protocol} {item.endpoint} "
-                        f"delays={delays}ms"
+                        f"delays={delays}ms average={item.latency_ms}ms"
                     )
 
     for country in sorted(countries):
@@ -945,22 +945,16 @@ def run_checks(
 
 
 def choose_diverse(items: list[Candidate], limit: int) -> list[Candidate]:
-    selected: list[Candidate] = []
-    used_protocols: set[str] = set()
-    for item in items:
-        if item.protocol not in used_protocols:
-            selected.append(item)
-            used_protocols.add(item.protocol)
-            if len(selected) >= limit:
-                return selected
-    selected_names = {item.name for item in selected}
-    for item in items:
-        if item.name in selected_names:
-            continue
-        selected.append(item)
-        if len(selected) >= limit:
-            break
-    return selected
+    """Return the lowest-latency working nodes (legacy hook name)."""
+    return sorted(
+        items,
+        key=lambda item: (
+            item.latency_ms is None,
+            item.latency_ms if item.latency_ms is not None else 10**9,
+            item.endpoint,
+            item.name,
+        ),
+    )[:limit]
 
 
 def label_uri(uri: str, country: str) -> str:

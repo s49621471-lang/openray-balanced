@@ -37,6 +37,7 @@ PROBE_URL = "https://cp.cloudflare.com/generate_204"
 PROBE_INTERVAL = "30s"
 PROBE_SAMPLING = 2
 PROBE_TIMEOUT = "5s"
+INCY_MAX_PER_COUNTRY = core.env_int("INCY_MAX_PER_COUNTRY", 5, 1, 20)
 
 XRAY_SHADOWSOCKS_METHODS = {
     "2022-blake3-aes-128-gcm",
@@ -333,11 +334,20 @@ def proxy_outbound(proxy: dict[str, Any], tag: str) -> dict[str, Any]:
 
     outbound: dict[str, Any] = {"tag": tag}
     if protocol == "vless":
+        encryption = str(proxy.get("encryption") or "none").strip()
+        stream = regular_stream_settings(proxy)
+        if (
+            str(stream.get("security") or "none").casefold() == "none"
+            and encryption.casefold() in {"", "none"}
+        ):
+            raise UnsupportedNode(
+                "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+            )
         settings: dict[str, Any] = {
             "address": address,
             "port": port,
             "id": str(proxy["uuid"]),
-            "encryption": str(proxy.get("encryption") or "none"),
+            "encryption": encryption,
             "level": 0,
         }
         if proxy.get("flow"):
@@ -348,7 +358,7 @@ def proxy_outbound(proxy: dict[str, Any], tag: str) -> dict[str, Any]:
             {
                 "protocol": "vless",
                 "settings": settings,
-                "streamSettings": regular_stream_settings(proxy),
+                "streamSettings": stream,
             }
         )
     elif protocol == "vmess":
@@ -666,6 +676,7 @@ def main() -> int:
         converted = filter_outbounds_with_xray(
             converted, country, skipped
         )
+        converted = converted[:INCY_MAX_PER_COUNTRY]
 
         if not converted:
             per_country[country] = {
