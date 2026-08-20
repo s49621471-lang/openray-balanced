@@ -1,17 +1,23 @@
 {
   "format": "INCY full Xray config array",
-  "input_nodes": 387,
-  "physical_nodes": 229,
-  "countries": 65,
+  "input_nodes": 386,
+  "physical_nodes": 226,
+  "countries": 68,
   "total_configs": 294,
-  "auto_configs": 65,
-  "manual_configs": 229,
+  "auto_configs": 68,
+  "manual_configs": 226,
   "per_country": {
     "AE": {
       "name": "ОАЭ",
       "working_input": 5,
       "included": 3,
       "configs": 4
+    },
+    "AF": {
+      "name": "Афганистан",
+      "working_input": 1,
+      "included": 1,
+      "configs": 2
     },
     "AL": {
       "name": "Албания",
@@ -45,9 +51,9 @@
     },
     "BG": {
       "name": "Болгария",
-      "working_input": 2,
-      "included": 2,
-      "configs": 3
+      "working_input": 1,
+      "included": 1,
+      "configs": 2
     },
     "BR": {
       "name": "Бразилия",
@@ -63,9 +69,8 @@
     },
     "BZ": {
       "name": "Белиз",
-      "working_input": 3,
-      "included": 1,
-      "configs": 2
+      "working_input": 2,
+      "included": 0
     },
     "CA": {
       "name": "Канада",
@@ -82,8 +87,8 @@
     "CN": {
       "name": "Китай",
       "working_input": 10,
-      "included": 5,
-      "configs": 6
+      "included": 4,
+      "configs": 5
     },
     "CO": {
       "name": "Колумбия",
@@ -95,6 +100,11 @@
       "working_input": 1,
       "included": 1,
       "configs": 2
+    },
+    "CW": {
+      "name": "Кюрасао",
+      "working_input": 1,
+      "included": 0
     },
     "CY": {
       "name": "Кипр",
@@ -167,6 +177,12 @@
       "included": 5,
       "configs": 6
     },
+    "HU": {
+      "name": "Венгрия",
+      "working_input": 1,
+      "included": 1,
+      "configs": 2
+    },
     "ID": {
       "name": "Индонезия",
       "working_input": 10,
@@ -185,11 +201,6 @@
       "included": 3,
       "configs": 4
     },
-    "IM": {
-      "name": "о-в Мэн",
-      "working_input": 1,
-      "included": 0
-    },
     "IN": {
       "name": "Индия",
       "working_input": 10,
@@ -204,9 +215,9 @@
     },
     "IR": {
       "name": "Иран",
-      "working_input": 5,
-      "included": 5,
-      "configs": 6
+      "working_input": 3,
+      "included": 3,
+      "configs": 4
     },
     "IT": {
       "name": "Италия",
@@ -222,9 +233,8 @@
     },
     "KP": {
       "name": "КНДР",
-      "working_input": 3,
-      "included": 1,
-      "configs": 2
+      "working_input": 2,
+      "included": 0
     },
     "KR": {
       "name": "Республика Корея",
@@ -234,9 +244,9 @@
     },
     "KZ": {
       "name": "Казахстан",
-      "working_input": 7,
-      "included": 5,
-      "configs": 6
+      "working_input": 6,
+      "included": 4,
+      "configs": 5
     },
     "LT": {
       "name": "Литва",
@@ -270,14 +280,9 @@
     },
     "MH": {
       "name": "Маршалловы о-ва",
-      "working_input": 3,
+      "working_input": 2,
       "included": 1,
       "configs": 2
-    },
-    "MX": {
-      "name": "Мексика",
-      "working_input": 1,
-      "included": 0
     },
     "MY": {
       "name": "Малайзия",
@@ -323,7 +328,7 @@
     },
     "PT": {
       "name": "Португалия",
-      "working_input": 3,
+      "working_input": 4,
       "included": 2,
       "configs": 3
     },
@@ -347,9 +352,15 @@
     },
     "SC": {
       "name": "Сейшельские о-ва",
-      "working_input": 8,
-      "included": 5,
-      "configs": 6
+      "working_input": 10,
+      "included": 4,
+      "configs": 5
+    },
+    "SD": {
+      "name": "Судан",
+      "working_input": 2,
+      "included": 2,
+      "configs": 3
     },
     "SE": {
       "name": "Швеция",
@@ -365,7 +376,19 @@
     },
     "SI": {
       "name": "Словения",
-      "working_input": 2,
+      "working_input": 1,
+      "included": 1,
+      "configs": 2
+    },
+    "SK": {
+      "name": "Словакия",
+      "working_input": 1,
+      "included": 1,
+      "configs": 2
+    },
+    "SZ": {
+      "name": "Эсватини",
+      "working_input": 1,
       "included": 1,
       "configs": 2
     },
@@ -390,12 +413,12 @@
     "TW": {
       "name": "Тайвань",
       "working_input": 10,
-      "included": 5,
-      "configs": 6
+      "included": 4,
+      "configs": 5
     },
     "UA": {
       "name": "Украина",
-      "working_input": 7,
+      "working_input": 6,
       "included": 5,
       "configs": 6
     },
@@ -426,7 +449,12 @@
     },
     {
       "country": "AU",
-      "protocol": "hysteria2",
+      "protocol": "trojan",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+    },
+    {
+      "country": "AU",
+      "protocol": "trojan",
       "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
     },
     {
@@ -465,14 +493,24 @@
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
-      "country": "GB",
+      "country": "DE",
+      "protocol": "hysteria2",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+    },
+    {
+      "country": "DE",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
       "country": "DE",
-      "protocol": "hysteria2",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "HK",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
       "country": "HK",
@@ -495,21 +533,6 @@
       "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
     },
     {
-      "country": "IE",
-      "protocol": "trojan",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
-      "country": "IE",
-      "protocol": "trojan",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
-      "country": "IE",
-      "protocol": "trojan",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
       "country": "IT",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
@@ -526,23 +549,8 @@
     },
     {
       "country": "CA",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "CA",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "CA",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "CA",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+      "protocol": "trojan",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
     },
     {
       "country": "CA",
@@ -558,16 +566,6 @@
       "country": "CN",
       "protocol": "ss",
       "reason": "unsupported Xray Shadowsocks method: aes-256-cfb"
-    },
-    {
-      "country": "CN",
-      "protocol": "ss",
-      "reason": "unsupported Xray Shadowsocks method: aes-256-cfb"
-    },
-    {
-      "country": "CN",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
       "country": "CN",
@@ -575,9 +573,19 @@
       "reason": "legacy VMess alterId is not supported"
     },
     {
-      "country": "KP",
+      "country": "CN",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "CN",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "CN",
+      "protocol": "ss",
+      "reason": "unsupported Xray Shadowsocks method: aes-256-cfb"
     },
     {
       "country": "KP",
@@ -585,7 +593,7 @@
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
-      "country": "CO",
+      "country": "KP",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
@@ -596,6 +604,16 @@
     },
     {
       "country": "CO",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "CO",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "CW",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
@@ -620,14 +638,9 @@
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
-      "country": "MH",
+      "country": "NL",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "MX",
-      "protocol": "vless",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
     },
     {
       "country": "NL",
@@ -640,22 +653,12 @@
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
-      "country": "IM",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
       "country": "AE",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
       "country": "AE",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "PL",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
@@ -668,6 +671,11 @@
       "country": "PL",
       "protocol": "trojan",
       "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+    },
+    {
+      "country": "PT",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
       "country": "PT",
@@ -691,68 +699,83 @@
     },
     {
       "country": "KR",
-      "protocol": "hysteria2",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
-      "country": "RO",
-      "protocol": "hysteria2",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
-      "country": "RO",
-      "protocol": "hysteria2",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
-      "country": "RO",
-      "protocol": "hysteria2",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
-      "country": "SC",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "SC",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "SC",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "SG",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "SG",
-      "protocol": "hysteria2",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
-      "country": "SI",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "US",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "US",
       "protocol": "ss",
-      "reason": "unsupported Xray Shadowsocks method: rc4-md5"
+      "reason": "unsupported Xray Shadowsocks method: aes-256-cfb"
+    },
+    {
+      "country": "KR",
+      "protocol": "hysteria2",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+    },
+    {
+      "country": "RU",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "RO",
+      "protocol": "hysteria2",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+    },
+    {
+      "country": "RO",
+      "protocol": "hysteria2",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+    },
+    {
+      "country": "SC",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "SC",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "SC",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "SC",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "SC",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "SC",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "SG",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "SG",
+      "protocol": "hysteria2",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+    },
+    {
+      "country": "SG",
+      "protocol": "trojan",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
     },
     {
       "country": "US",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+      "protocol": "vmess",
+      "reason": "legacy VMess alterId is not supported"
+    },
+    {
+      "country": "US",
+      "protocol": "hysteria2",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
     },
     {
       "country": "TH",
@@ -761,6 +784,16 @@
     },
     {
       "country": "TW",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "TW",
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+    },
+    {
+      "country": "TW",
       "protocol": "hysteria2",
       "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
     },
@@ -771,13 +804,8 @@
     },
     {
       "country": "TW",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
-    },
-    {
-      "country": "TW",
-      "protocol": "vless",
-      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
+      "protocol": "ss",
+      "reason": "unsupported Xray Shadowsocks method: aes-256-cfb"
     },
     {
       "country": "TW",
@@ -786,18 +814,18 @@
     },
     {
       "country": "TR",
-      "protocol": "trojan",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
-    },
-    {
-      "country": "FI",
-      "protocol": "hysteria2",
-      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
+      "protocol": "vless",
+      "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
       "country": "FR",
       "protocol": "ss",
       "reason": "unsupported Xray Shadowsocks method: aes-256-cfb"
+    },
+    {
+      "country": "FR",
+      "protocol": "trojan",
+      "reason": "TLS certificate verification is disabled in the source; current Xray requires a pinned certificate fingerprint"
     },
     {
       "country": "CZ",
@@ -810,7 +838,7 @@
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
     {
-      "country": "JP",
+      "country": "EE",
       "protocol": "vless",
       "reason": "INCY prohibits VLESS without TLS, REALITY, or VLESS encryption"
     },
