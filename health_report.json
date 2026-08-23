@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-23T04:25:12.774783+00:00",
+  "generated_at": "2026-08-23T05:10:48.721986+00:00",
   "checker": "Mihomo end-to-end HTTPS delay API",
   "test_urls": [
     "https://cp.cloudflare.com/generate_204",
@@ -8,80 +8,91 @@
   "check_timeout_ms": 8000,
   "max_per_country": 10,
   "max_candidates_per_country": 60,
-  "total_tested": 4073,
-  "total_working_found": 648,
-  "total_selected": 377,
+  "total_tested": 4077,
+  "total_working_found": 660,
+  "total_selected": 382,
   "countries": {
     "AE": {
       "available": 189,
-      "parse_rejected": 7,
+      "parse_rejected": 8,
       "duplicate_endpoints": 108,
       "eligible": 60,
-      "candidate_limit_skipped": 14,
+      "candidate_limit_skipped": 13,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 3,
-      "selected": 3
+      "working_found": 2,
+      "selected": 2
+    },
+    "AF": {
+      "available": 3,
+      "parse_rejected": 0,
+      "duplicate_endpoints": 2,
+      "eligible": 1,
+      "candidate_limit_skipped": 0,
+      "config_rejected": 0,
+      "tested": 1,
+      "working_found": 1,
+      "selected": 1
     },
     "AL": {
-      "available": 127,
-      "parse_rejected": 2,
+      "available": 129,
+      "parse_rejected": 3,
       "duplicate_endpoints": 62,
       "eligible": 60,
-      "candidate_limit_skipped": 3,
+      "candidate_limit_skipped": 4,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 7,
-      "selected": 7
+      "working_found": 8,
+      "selected": 8
     },
     "AM": {
-      "available": 105,
-      "parse_rejected": 8,
-      "duplicate_endpoints": 35,
+      "available": 102,
+      "parse_rejected": 9,
+      "duplicate_endpoints": 29,
       "eligible": 60,
-      "candidate_limit_skipped": 2,
+      "candidate_limit_skipped": 4,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 3,
       "selected": 3
     },
     "AR": {
-      "available": 21,
+      "available": 23,
       "parse_rejected": 0,
-      "duplicate_endpoints": 5,
-      "eligible": 16,
+      "duplicate_endpoints": 8,
+      "eligible": 15,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
-      "tested": 16,
+      "tested": 15,
       "working_found": 0,
       "selected": 0
     },
     "AT": {
-      "available": 201,
+      "available": 205,
       "parse_rejected": 3,
-      "duplicate_endpoints": 78,
+      "duplicate_endpoints": 81,
       "eligible": 60,
-      "candidate_limit_skipped": 60,
+      "candidate_limit_skipped": 61,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 3,
-      "selected": 3
+      "working_found": 5,
+      "selected": 5
     },
     "AU": {
-      "available": 332,
+      "available": 328,
       "parse_rejected": 3,
-      "duplicate_endpoints": 215,
+      "duplicate_endpoints": 209,
       "eligible": 60,
-      "candidate_limit_skipped": 54,
+      "candidate_limit_skipped": 56,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 24,
       "selected": 10
     },
     "AZ": {
-      "available": 67,
+      "available": 66,
       "parse_rejected": 2,
-      "duplicate_endpoints": 31,
+      "duplicate_endpoints": 30,
       "eligible": 34,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
@@ -90,15 +101,15 @@
       "selected": 0
     },
     "BA": {
-      "available": 32,
+      "available": 34,
       "parse_rejected": 0,
-      "duplicate_endpoints": 7,
+      "duplicate_endpoints": 9,
       "eligible": 25,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
       "tested": 25,
-      "working_found": 0,
-      "selected": 0
+      "working_found": 1,
+      "selected": 1
     },
     "BD": {
       "available": 20,
@@ -112,26 +123,26 @@
       "selected": 0
     },
     "BE": {
-      "available": 151,
+      "available": 154,
       "parse_rejected": 5,
-      "duplicate_endpoints": 76,
+      "duplicate_endpoints": 78,
       "eligible": 60,
-      "candidate_limit_skipped": 10,
+      "candidate_limit_skipped": 11,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 3,
-      "selected": 3
+      "working_found": 4,
+      "selected": 4
     },
     "BG": {
       "available": 138,
-      "parse_rejected": 3,
+      "parse_rejected": 4,
       "duplicate_endpoints": 43,
       "eligible": 60,
-      "candidate_limit_skipped": 32,
+      "candidate_limit_skipped": 31,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 3,
-      "selected": 3
+      "working_found": 4,
+      "selected": 4
     },
     "BH": {
       "available": 40,
@@ -156,31 +167,31 @@
       "selected": 0
     },
     "BR": {
-      "available": 208,
+      "available": 209,
       "parse_rejected": 3,
       "duplicate_endpoints": 70,
       "eligible": 60,
-      "candidate_limit_skipped": 75,
+      "candidate_limit_skipped": 76,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 9,
-      "selected": 9
+      "working_found": 10,
+      "selected": 10
     },
     "BY": {
-      "available": 48,
+      "available": 47,
       "parse_rejected": 2,
-      "duplicate_endpoints": 21,
+      "duplicate_endpoints": 20,
       "eligible": 25,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
       "tested": 25,
-      "working_found": 2,
-      "selected": 2
+      "working_found": 3,
+      "selected": 3
     },
     "BZ": {
-      "available": 93,
+      "available": 94,
       "parse_rejected": 0,
-      "duplicate_endpoints": 65,
+      "duplicate_endpoints": 66,
       "eligible": 28,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
@@ -191,24 +202,24 @@
     "CA": {
       "available": 562,
       "parse_rejected": 73,
-      "duplicate_endpoints": 238,
+      "duplicate_endpoints": 207,
       "eligible": 60,
-      "candidate_limit_skipped": 191,
+      "candidate_limit_skipped": 222,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 30,
+      "working_found": 32,
       "selected": 10
     },
     "CH": {
       "available": 384,
-      "parse_rejected": 11,
-      "duplicate_endpoints": 149,
+      "parse_rejected": 12,
+      "duplicate_endpoints": 152,
       "eligible": 60,
-      "candidate_limit_skipped": 164,
+      "candidate_limit_skipped": 160,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 8,
-      "selected": 8
+      "working_found": 9,
+      "selected": 9
     },
     "CL": {
       "available": 25,
@@ -222,20 +233,20 @@
       "selected": 0
     },
     "CN": {
-      "available": 178,
+      "available": 176,
       "parse_rejected": 0,
-      "duplicate_endpoints": 69,
+      "duplicate_endpoints": 67,
       "eligible": 60,
       "candidate_limit_skipped": 49,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 3,
-      "selected": 3
+      "working_found": 4,
+      "selected": 4
     },
     "CO": {
-      "available": 185,
+      "available": 184,
       "parse_rejected": 0,
-      "duplicate_endpoints": 48,
+      "duplicate_endpoints": 47,
       "eligible": 60,
       "candidate_limit_skipped": 77,
       "config_rejected": 0,
@@ -262,46 +273,46 @@
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
       "tested": 5,
-      "working_found": 0,
-      "selected": 0
+      "working_found": 1,
+      "selected": 1
     },
     "CY": {
       "available": 122,
-      "parse_rejected": 9,
+      "parse_rejected": 8,
       "duplicate_endpoints": 39,
       "eligible": 60,
-      "candidate_limit_skipped": 14,
+      "candidate_limit_skipped": 15,
+      "config_rejected": 0,
+      "tested": 60,
+      "working_found": 5,
+      "selected": 5
+    },
+    "CZ": {
+      "available": 254,
+      "parse_rejected": 8,
+      "duplicate_endpoints": 128,
+      "eligible": 60,
+      "candidate_limit_skipped": 58,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 6,
       "selected": 6
     },
-    "CZ": {
-      "available": 256,
-      "parse_rejected": 8,
-      "duplicate_endpoints": 126,
-      "eligible": 60,
-      "candidate_limit_skipped": 62,
-      "config_rejected": 0,
-      "tested": 60,
-      "working_found": 7,
-      "selected": 7
-    },
     "DE": {
-      "available": 640,
+      "available": 642,
       "parse_rejected": 112,
-      "duplicate_endpoints": 198,
+      "duplicate_endpoints": 204,
       "eligible": 60,
-      "candidate_limit_skipped": 270,
+      "candidate_limit_skipped": 266,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 28,
+      "working_found": 33,
       "selected": 10
     },
     "DK": {
-      "available": 130,
+      "available": 132,
       "parse_rejected": 3,
-      "duplicate_endpoints": 65,
+      "duplicate_endpoints": 67,
       "eligible": 60,
       "candidate_limit_skipped": 2,
       "config_rejected": 0,
@@ -343,15 +354,15 @@
       "selected": 0
     },
     "EE": {
-      "available": 212,
+      "available": 214,
       "parse_rejected": 17,
-      "duplicate_endpoints": 86,
+      "duplicate_endpoints": 87,
       "eligible": 60,
-      "candidate_limit_skipped": 49,
+      "candidate_limit_skipped": 50,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 9,
-      "selected": 9
+      "working_found": 8,
+      "selected": 8
     },
     "EG": {
       "available": 10,
@@ -365,68 +376,68 @@
       "selected": 1
     },
     "ES": {
-      "available": 228,
+      "available": 226,
       "parse_rejected": 8,
-      "duplicate_endpoints": 70,
+      "duplicate_endpoints": 68,
       "eligible": 60,
       "candidate_limit_skipped": 90,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 6,
-      "selected": 6
+      "working_found": 8,
+      "selected": 8
     },
     "FI": {
-      "available": 462,
+      "available": 446,
       "parse_rejected": 54,
-      "duplicate_endpoints": 214,
+      "duplicate_endpoints": 199,
       "eligible": 60,
-      "candidate_limit_skipped": 134,
+      "candidate_limit_skipped": 133,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 18,
+      "working_found": 19,
       "selected": 10
     },
     "FR": {
       "available": 572,
-      "parse_rejected": 47,
-      "duplicate_endpoints": 263,
+      "parse_rejected": 48,
+      "duplicate_endpoints": 258,
       "eligible": 60,
-      "candidate_limit_skipped": 202,
+      "candidate_limit_skipped": 206,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 25,
+      "working_found": 23,
       "selected": 10
     },
     "GB": {
-      "available": 515,
+      "available": 511,
       "parse_rejected": 23,
-      "duplicate_endpoints": 203,
+      "duplicate_endpoints": 201,
       "eligible": 60,
-      "candidate_limit_skipped": 229,
+      "candidate_limit_skipped": 227,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 38,
+      "working_found": 37,
       "selected": 10
     },
     "GE": {
-      "available": 49,
+      "available": 50,
       "parse_rejected": 0,
       "duplicate_endpoints": 20,
-      "eligible": 29,
+      "eligible": 30,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
-      "tested": 29,
+      "tested": 30,
       "working_found": 2,
       "selected": 2
     },
     "GR": {
       "available": 97,
       "parse_rejected": 0,
-      "duplicate_endpoints": 39,
-      "eligible": 58,
+      "duplicate_endpoints": 40,
+      "eligible": 57,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
-      "tested": 58,
+      "tested": 57,
       "working_found": 4,
       "selected": 4
     },
@@ -442,14 +453,14 @@
       "selected": 0
     },
     "HK": {
-      "available": 507,
-      "parse_rejected": 5,
-      "duplicate_endpoints": 307,
+      "available": 516,
+      "parse_rejected": 6,
+      "duplicate_endpoints": 318,
       "eligible": 60,
-      "candidate_limit_skipped": 135,
+      "candidate_limit_skipped": 132,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 32,
+      "working_found": 31,
       "selected": 10
     },
     "HR": {
@@ -464,9 +475,9 @@
       "selected": 0
     },
     "HU": {
-      "available": 175,
+      "available": 176,
       "parse_rejected": 2,
-      "duplicate_endpoints": 60,
+      "duplicate_endpoints": 61,
       "eligible": 60,
       "candidate_limit_skipped": 53,
       "config_rejected": 0,
@@ -497,13 +508,13 @@
       "selected": 3
     },
     "IL": {
-      "available": 97,
+      "available": 96,
       "parse_rejected": 0,
       "duplicate_endpoints": 34,
       "eligible": 60,
-      "candidate_limit_skipped": 3,
-      "config_rejected": 1,
-      "tested": 59,
+      "candidate_limit_skipped": 2,
+      "config_rejected": 0,
+      "tested": 60,
       "working_found": 0,
       "selected": 0
     },
@@ -519,37 +530,37 @@
       "selected": 0
     },
     "IN": {
-      "available": 222,
+      "available": 224,
       "parse_rejected": 1,
-      "duplicate_endpoints": 111,
+      "duplicate_endpoints": 115,
       "eligible": 60,
-      "candidate_limit_skipped": 50,
+      "candidate_limit_skipped": 48,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 8,
       "selected": 8
     },
     "IQ": {
-      "available": 27,
+      "available": 30,
       "parse_rejected": 1,
-      "duplicate_endpoints": 4,
-      "eligible": 22,
+      "duplicate_endpoints": 6,
+      "eligible": 23,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
-      "tested": 22,
+      "tested": 23,
       "working_found": 0,
       "selected": 0
     },
     "IR": {
-      "available": 488,
+      "available": 489,
       "parse_rejected": 78,
-      "duplicate_endpoints": 174,
+      "duplicate_endpoints": 176,
       "eligible": 60,
-      "candidate_limit_skipped": 176,
+      "candidate_limit_skipped": 175,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 6,
-      "selected": 6
+      "working_found": 7,
+      "selected": 7
     },
     "IS": {
       "available": 20,
@@ -563,14 +574,14 @@
       "selected": 0
     },
     "IT": {
-      "available": 220,
+      "available": 218,
       "parse_rejected": 13,
-      "duplicate_endpoints": 91,
+      "duplicate_endpoints": 90,
       "eligible": 60,
-      "candidate_limit_skipped": 56,
+      "candidate_limit_skipped": 55,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 16,
+      "working_found": 15,
       "selected": 10
     },
     "JM": {
@@ -596,9 +607,9 @@
       "selected": 0
     },
     "JP": {
-      "available": 504,
-      "parse_rejected": 6,
-      "duplicate_endpoints": 269,
+      "available": 508,
+      "parse_rejected": 7,
+      "duplicate_endpoints": 272,
       "eligible": 60,
       "candidate_limit_skipped": 169,
       "config_rejected": 0,
@@ -640,26 +651,26 @@
       "selected": 0
     },
     "KR": {
-      "available": 228,
+      "available": 230,
       "parse_rejected": 0,
-      "duplicate_endpoints": 69,
+      "duplicate_endpoints": 70,
       "eligible": 60,
-      "candidate_limit_skipped": 99,
+      "candidate_limit_skipped": 100,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 21,
+      "working_found": 20,
       "selected": 10
     },
     "KZ": {
-      "available": 214,
+      "available": 216,
       "parse_rejected": 9,
-      "duplicate_endpoints": 103,
+      "duplicate_endpoints": 105,
       "eligible": 60,
       "candidate_limit_skipped": 42,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 7,
-      "selected": 7
+      "working_found": 6,
+      "selected": 6
     },
     "LI": {
       "available": 1,
@@ -684,37 +695,37 @@
       "selected": 0
     },
     "LT": {
-      "available": 191,
-      "parse_rejected": 8,
+      "available": 192,
+      "parse_rejected": 10,
       "duplicate_endpoints": 32,
       "eligible": 60,
-      "candidate_limit_skipped": 91,
+      "candidate_limit_skipped": 90,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 4,
-      "selected": 4
+      "working_found": 5,
+      "selected": 5
     },
     "LU": {
       "available": 90,
       "parse_rejected": 1,
-      "duplicate_endpoints": 37,
-      "eligible": 52,
+      "duplicate_endpoints": 36,
+      "eligible": 53,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
-      "tested": 52,
+      "tested": 53,
       "working_found": 1,
       "selected": 1
     },
     "LV": {
-      "available": 195,
-      "parse_rejected": 9,
-      "duplicate_endpoints": 50,
+      "available": 198,
+      "parse_rejected": 10,
+      "duplicate_endpoints": 53,
       "eligible": 60,
-      "candidate_limit_skipped": 76,
+      "candidate_limit_skipped": 75,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 8,
-      "selected": 8
+      "working_found": 7,
+      "selected": 7
     },
     "MA": {
       "available": 3,
@@ -746,13 +757,13 @@
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
       "tested": 4,
-      "working_found": 2,
-      "selected": 2
+      "working_found": 1,
+      "selected": 1
     },
     "MH": {
-      "available": 57,
+      "available": 58,
       "parse_rejected": 0,
-      "duplicate_endpoints": 20,
+      "duplicate_endpoints": 21,
       "eligible": 37,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
@@ -838,15 +849,15 @@
       "selected": 1
     },
     "MY": {
-      "available": 113,
-      "parse_rejected": 1,
-      "duplicate_endpoints": 47,
+      "available": 115,
+      "parse_rejected": 0,
+      "duplicate_endpoints": 49,
       "eligible": 60,
-      "candidate_limit_skipped": 5,
+      "candidate_limit_skipped": 6,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 3,
-      "selected": 3
+      "working_found": 2,
+      "selected": 2
     },
     "NE": {
       "available": 4,
@@ -872,25 +883,25 @@
     },
     "NL": {
       "available": 676,
-      "parse_rejected": 114,
-      "duplicate_endpoints": 228,
+      "parse_rejected": 116,
+      "duplicate_endpoints": 234,
       "eligible": 60,
-      "candidate_limit_skipped": 274,
+      "candidate_limit_skipped": 266,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 47,
+      "working_found": 43,
       "selected": 10
     },
     "NO": {
-      "available": 115,
-      "parse_rejected": 1,
-      "duplicate_endpoints": 48,
+      "available": 111,
+      "parse_rejected": 2,
+      "duplicate_endpoints": 44,
       "eligible": 60,
-      "candidate_limit_skipped": 6,
+      "candidate_limit_skipped": 5,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 5,
-      "selected": 5
+      "working_found": 4,
+      "selected": 4
     },
     "NZ": {
       "available": 71,
@@ -937,20 +948,20 @@
       "selected": 3
     },
     "PH": {
-      "available": 113,
+      "available": 112,
       "parse_rejected": 0,
-      "duplicate_endpoints": 50,
+      "duplicate_endpoints": 49,
       "eligible": 60,
       "candidate_limit_skipped": 3,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 4,
-      "selected": 4
+      "working_found": 3,
+      "selected": 3
     },
     "PK": {
       "available": 19,
-      "parse_rejected": 0,
-      "duplicate_endpoints": 8,
+      "parse_rejected": 1,
+      "duplicate_endpoints": 7,
       "eligible": 11,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
@@ -959,20 +970,20 @@
       "selected": 1
     },
     "PL": {
-      "available": 480,
+      "available": 491,
       "parse_rejected": 25,
-      "duplicate_endpoints": 278,
+      "duplicate_endpoints": 287,
       "eligible": 60,
-      "candidate_limit_skipped": 117,
+      "candidate_limit_skipped": 119,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 35,
       "selected": 10
     },
     "PT": {
-      "available": 45,
+      "available": 44,
       "parse_rejected": 1,
-      "duplicate_endpoints": 18,
+      "duplicate_endpoints": 17,
       "eligible": 26,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
@@ -992,20 +1003,20 @@
       "selected": 0
     },
     "RO": {
-      "available": 193,
-      "parse_rejected": 20,
-      "duplicate_endpoints": 74,
+      "available": 191,
+      "parse_rejected": 21,
+      "duplicate_endpoints": 71,
       "eligible": 60,
       "candidate_limit_skipped": 39,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 1,
-      "selected": 1
+      "working_found": 2,
+      "selected": 2
     },
     "RS": {
-      "available": 22,
+      "available": 24,
       "parse_rejected": 0,
-      "duplicate_endpoints": 12,
+      "duplicate_endpoints": 14,
       "eligible": 10,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
@@ -1015,19 +1026,19 @@
     },
     "RU": {
       "available": 413,
-      "parse_rejected": 56,
-      "duplicate_endpoints": 140,
+      "parse_rejected": 58,
+      "duplicate_endpoints": 150,
       "eligible": 60,
-      "candidate_limit_skipped": 157,
+      "candidate_limit_skipped": 145,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 10,
-      "selected": 10
+      "working_found": 5,
+      "selected": 5
     },
     "SA": {
       "available": 51,
-      "parse_rejected": 1,
-      "duplicate_endpoints": 16,
+      "parse_rejected": 2,
+      "duplicate_endpoints": 15,
       "eligible": 34,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
@@ -1036,15 +1047,15 @@
       "selected": 0
     },
     "SC": {
-      "available": 230,
+      "available": 232,
       "parse_rejected": 22,
       "duplicate_endpoints": 78,
       "eligible": 60,
-      "candidate_limit_skipped": 70,
+      "candidate_limit_skipped": 72,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 7,
-      "selected": 7
+      "working_found": 12,
+      "selected": 10
     },
     "SD": {
       "available": 4,
@@ -1058,46 +1069,46 @@
       "selected": 0
     },
     "SE": {
-      "available": 284,
-      "parse_rejected": 10,
-      "duplicate_endpoints": 100,
+      "available": 283,
+      "parse_rejected": 9,
+      "duplicate_endpoints": 101,
       "eligible": 60,
-      "candidate_limit_skipped": 114,
-      "config_rejected": 0,
-      "tested": 60,
-      "working_found": 11,
-      "selected": 10
-    },
-    "SG": {
-      "available": 453,
-      "parse_rejected": 13,
-      "duplicate_endpoints": 195,
-      "eligible": 60,
-      "candidate_limit_skipped": 185,
-      "config_rejected": 0,
-      "tested": 60,
-      "working_found": 22,
-      "selected": 10
-    },
-    "SI": {
-      "available": 93,
-      "parse_rejected": 1,
-      "duplicate_endpoints": 29,
-      "eligible": 60,
-      "candidate_limit_skipped": 3,
+      "candidate_limit_skipped": 113,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 10,
       "selected": 10
     },
+    "SG": {
+      "available": 454,
+      "parse_rejected": 13,
+      "duplicate_endpoints": 192,
+      "eligible": 60,
+      "candidate_limit_skipped": 189,
+      "config_rejected": 0,
+      "tested": 60,
+      "working_found": 23,
+      "selected": 10
+    },
+    "SI": {
+      "available": 120,
+      "parse_rejected": 0,
+      "duplicate_endpoints": 48,
+      "eligible": 60,
+      "candidate_limit_skipped": 12,
+      "config_rejected": 0,
+      "tested": 60,
+      "working_found": 19,
+      "selected": 10
+    },
     "SK": {
-      "available": 19,
+      "available": 20,
       "parse_rejected": 0,
       "duplicate_endpoints": 8,
-      "eligible": 11,
+      "eligible": 12,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
-      "tested": 11,
+      "tested": 12,
       "working_found": 1,
       "selected": 1
     },
@@ -1124,15 +1135,15 @@
       "selected": 0
     },
     "TH": {
-      "available": 85,
+      "available": 86,
       "parse_rejected": 0,
-      "duplicate_endpoints": 37,
+      "duplicate_endpoints": 38,
       "eligible": 48,
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
       "tested": 48,
-      "working_found": 2,
-      "selected": 2
+      "working_found": 1,
+      "selected": 1
     },
     "TJ": {
       "available": 6,
@@ -1168,11 +1179,11 @@
       "selected": 0
     },
     "TR": {
-      "available": 346,
-      "parse_rejected": 21,
-      "duplicate_endpoints": 108,
+      "available": 365,
+      "parse_rejected": 25,
+      "duplicate_endpoints": 120,
       "eligible": 60,
-      "candidate_limit_skipped": 157,
+      "candidate_limit_skipped": 160,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 18,
@@ -1190,22 +1201,22 @@
       "selected": 0
     },
     "TW": {
-      "available": 244,
+      "available": 245,
       "parse_rejected": 2,
-      "duplicate_endpoints": 120,
+      "duplicate_endpoints": 122,
       "eligible": 60,
-      "candidate_limit_skipped": 62,
+      "candidate_limit_skipped": 61,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 12,
+      "working_found": 11,
       "selected": 10
     },
     "UA": {
       "available": 156,
       "parse_rejected": 5,
-      "duplicate_endpoints": 69,
+      "duplicate_endpoints": 68,
       "eligible": 60,
-      "candidate_limit_skipped": 22,
+      "candidate_limit_skipped": 23,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 6,
@@ -1225,12 +1236,12 @@
     "US": {
       "available": 710,
       "parse_rejected": 124,
-      "duplicate_endpoints": 302,
+      "duplicate_endpoints": 300,
       "eligible": 60,
-      "candidate_limit_skipped": 224,
+      "candidate_limit_skipped": 226,
       "config_rejected": 0,
       "tested": 60,
-      "working_found": 47,
+      "working_found": 46,
       "selected": 10
     },
     "UZ": {
@@ -1241,8 +1252,8 @@
       "candidate_limit_skipped": 0,
       "config_rejected": 0,
       "tested": 6,
-      "working_found": 0,
-      "selected": 0
+      "working_found": 1,
+      "selected": 1
     },
     "VE": {
       "available": 6,
@@ -1311,11 +1322,11 @@
       "selected": 0
     },
     "ZA": {
-      "available": 118,
+      "available": 122,
       "parse_rejected": 1,
-      "duplicate_endpoints": 49,
+      "duplicate_endpoints": 52,
       "eligible": 60,
-      "candidate_limit_skipped": 8,
+      "candidate_limit_skipped": 9,
       "config_rejected": 0,
       "tested": 60,
       "working_found": 3,
