@@ -2,6 +2,14 @@ name: Update balanced multi-source + INCY subscriptions
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "filter_openray.py"
+      - "filter_multi.py"
+      - "build_incy.py"
+      - ".github/workflows/update.yml"
   schedule:
     # Refresh twice per hour; sources themselves update on their own schedules.
     - cron: "12,42 * * * *"
@@ -87,7 +95,7 @@ jobs:
           MIHOMO_BIN: /usr/local/bin/mihomo
           XRAY_BIN: /usr/local/bin/xray
 
-          # Final limit: maximum 5 WORKING nodes per country.
+          # Keep 10 stable URI candidates; INCY leaves up to 5 compatible nodes.
           MAX_PER_COUNTRY: "10"
 
           # Test a useful pool from every country/source, not thousands.
@@ -95,7 +103,10 @@ jobs:
           SOURCE_PER_COUNTRY_LIMIT: "80"
           GLOBAL_SOURCE_LINE_LIMIT: "50000"
 
-          CHECK_TIMEOUT_MS: "8000"
+          CHECK_TIMEOUT_MS: "5000"
+          STABILITY_ROUNDS: "3"
+          STABILITY_PAUSE_SECONDS: "15"
+          STABILITY_CANDIDATES_PER_COUNTRY: "15"
           CHECK_WORKERS: "64"
           CHECK_BATCH_SIZE: "9"
           DOWNLOAD_WORKERS: "16"
@@ -126,3 +137,4 @@ jobs:
             git commit -m "Update health-checked multi-source subscription"
             git push
           fi
+
