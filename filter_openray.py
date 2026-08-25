@@ -3,7 +3,8 @@
 
 Each candidate is converted to a Mihomo proxy, then Mihomo's controller API
 performs HTTPS requests through that exact proxy.  A node is selected only when
-all configured test URLs pass.  Countries keep at most MAX_PER_COUNTRY nodes;
+all configured test URLs pass in every stability round. Countries keep at most
+MAX_PER_COUNTRY nodes;
 when fewer pass, all passing nodes are kept.
 """
 
@@ -52,10 +53,15 @@ MAX_PER_COUNTRY = env_int("MAX_PER_COUNTRY", 5, 1, 20)
 MAX_CANDIDATES_PER_COUNTRY = env_int(
     "MAX_CANDIDATES_PER_COUNTRY", 40, MAX_PER_COUNTRY, 200
 )
-CHECK_TIMEOUT_MS = env_int("CHECK_TIMEOUT_MS", 8000, 2000, 30000)
+CHECK_TIMEOUT_MS = env_int("CHECK_TIMEOUT_MS", 5000, 2000, 30000)
 CHECK_WORKERS = env_int("CHECK_WORKERS", 64, 1, 256)
 CHECK_BATCH_SIZE = env_int("CHECK_BATCH_SIZE", 8, 1, 50)
 DOWNLOAD_WORKERS = env_int("DOWNLOAD_WORKERS", 16, 1, 32)
+STABILITY_ROUNDS = env_int("STABILITY_ROUNDS", 3, 1, 5)
+STABILITY_PAUSE_SECONDS = env_int("STABILITY_PAUSE_SECONDS", 15, 0, 60)
+STABILITY_CANDIDATES_PER_COUNTRY = env_int(
+    "STABILITY_CANDIDATES_PER_COUNTRY", 15, MAX_PER_COUNTRY, 60
+)
 MIN_TOTAL_WORKING = env_int("MIN_TOTAL_WORKING", 5, 1, 1000)
 
 DEFAULT_TEST_URLS = (
@@ -737,7 +743,12 @@ def load_candidates() -> tuple[dict[str, list[Candidate]], dict[str, dict[str, i
             "candidate_limit_skipped": max(0, len(ordered) - len(eligible)),
             "config_rejected": 0,
             "tested": 0,
+            "initial_working_found": 0,
             "working_found": 0,
+            "stability_tested": 0,
+            "stability_attempts": 0,
+            "stability_passed": 0,
+            "stability_failed": 0,
             "selected": 0,
         }
         log(
@@ -936,12 +947,114 @@ def run_checks(
                     )
 
     for country in sorted(countries):
-        metadata[country]["working_found"] = len(working[country])
+        initial_count = len(working[country])
+        metadata[country]["initial_working_found"] = initial_count
+        metadata[country]["working_found"] = initial_count
         log(
-            f"{country}: working={len(working[country])} "
+            f"{country}: initial_working={initial_count} "
             f"tested={metadata[country]['tested']}"
         )
     return working
+
+
+def run_stability_checks(
+    port: int,
+    initially_working: dict[str, list[Candidate]],
+    metadata: dict[str, dict[str, int]],
+) -> dict[str, list[Candidate]]:
+    """Keep only candidates that pass every repeated HTTPS check round."""
+    finalists = {
+        country: choose_diverse(items, STABILITY_CANDIDATES_PER_COUNTRY)
+        for country, items in initially_working.items()
+    }
+    survivors = {
+        country: list(items) for country, items in finalists.items()
+    }
+    latency_samples: dict[str, list[int]] = {
+        item.name: []
+        for items in finalists.values()
+        for item in items
+    }
+
+    for country, items in finalists.items():
+        metadata[country]["stability_tested"] = len(items)
+
+    for round_index in range(1, STABILITY_ROUNDS + 1):
+        batch = [
+            item
+            for country in sorted(survivors)
+            for item in survivors[country]
+        ]
+        if not batch:
+            log("Stability check stopped: no candidates remain")
+            break
+
+        if round_index > 1 and STABILITY_PAUSE_SECONDS:
+            log(
+                f"Waiting {STABILITY_PAUSE_SECONDS}s before stability "
+                f"round {round_index}/{STABILITY_ROUNDS}"
+            )
+            time.sleep(STABILITY_PAUSE_SECONDS)
+
+        log(
+            f"Stability round {round_index}/{STABILITY_ROUNDS}: "
+            f"{len(batch)} candidates"
+        )
+        passed_by_country: dict[str, list[Candidate]] = {
+            country: [] for country in survivors
+        }
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=CHECK_WORKERS
+        ) as executor:
+            future_map = {
+                executor.submit(check_candidate, port, item): item
+                for item in batch
+            }
+            for future in concurrent.futures.as_completed(future_map):
+                item = future_map[future]
+                metadata[item.country]["stability_attempts"] += 1
+                try:
+                    passed, delays = future.result()
+                except Exception:
+                    passed, delays = False, []
+                if passed:
+                    latency_samples[item.name].extend(delays)
+                    passed_by_country[item.country].append(item)
+                    log(
+                        f"STABLE PASS {round_index}/{STABILITY_ROUNDS} "
+                        f"{item.country} {item.protocol} {item.endpoint} "
+                        f"delays={delays}ms"
+                    )
+                else:
+                    log(
+                        f"STABLE FAIL {round_index}/{STABILITY_ROUNDS} "
+                        f"{item.country} {item.protocol} {item.endpoint}"
+                    )
+
+        survivors = passed_by_country
+        log(
+            f"Stability round {round_index} passed: "
+            f"{sum(len(items) for items in survivors.values())}"
+        )
+
+    for country in sorted(finalists):
+        stable = survivors[country]
+        for item in stable:
+            samples = latency_samples[item.name]
+            item.latency_ms = (
+                round(sum(samples) / len(samples)) if samples else None
+            )
+        stable_count = len(stable)
+        metadata[country]["working_found"] = stable_count
+        metadata[country]["stability_passed"] = stable_count
+        metadata[country]["stability_failed"] = (
+            len(finalists[country]) - stable_count
+        )
+        log(
+            f"{country}: stable={stable_count} "
+            f"of {len(finalists[country])} finalists"
+        )
+    return survivors
 
 
 def choose_diverse(items: list[Candidate], limit: int) -> list[Candidate]:
@@ -1037,9 +1150,12 @@ def write_outputs(
     }
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "checker": "Mihomo end-to-end HTTPS delay API",
+        "checker": "Mihomo repeated end-to-end HTTPS delay API",
         "test_urls": list(TEST_URLS),
         "check_timeout_ms": CHECK_TIMEOUT_MS,
+        "stability_rounds": STABILITY_ROUNDS,
+        "stability_pause_seconds": STABILITY_PAUSE_SECONDS,
+        "stability_candidates_per_country": STABILITY_CANDIDATES_PER_COUNTRY,
         "max_per_country": MAX_PER_COUNTRY,
         "max_candidates_per_country": MAX_CANDIDATES_PER_COUNTRY,
         "total_tested": sum(item["tested"] for item in metadata.values()),
@@ -1049,8 +1165,9 @@ def write_outputs(
         "total_selected": len(nodes),
         "countries": dict(sorted(metadata.items())),
         "note": (
-            "Checks run from GitHub Actions. A node can still be blocked by a "
-            "specific mobile operator or fail after the workflow finishes."
+            "Each selected node passed every repeated HTTPS check from GitHub "
+            "Actions. A node can still be blocked by a specific mobile operator "
+            "or fail after the workflow finishes."
         ),
     }
 
@@ -1127,7 +1244,10 @@ def main() -> int:
             text=True,
         )
         wait_for_controller(controller_port, process)
-        working = run_checks(controller_port, countries, metadata)
+        initially_working = run_checks(controller_port, countries, metadata)
+        working = run_stability_checks(
+            controller_port, initially_working, metadata
+        )
         write_outputs(working, metadata)
     except Exception:
         if log_handle:
@@ -1149,3 +1269,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
